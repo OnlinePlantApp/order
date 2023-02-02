@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cg.onlineplantnursery.dto.OrderAdminResponseDTO;
 import com.cg.onlineplantnursery.dto.OrderDTO;
+import com.cg.onlineplantnursery.exceptions.CustomerIdNotFoundException;
 import com.cg.onlineplantnursery.exceptions.OrderIdNotFoundException;
-import com.cg.onlineplantnursery.order.entity.Order;
+import com.cg.onlineplantnursery.entity.Order;
 import com.cg.onlineplantnursery.order.service.IOrderService;
 import com.cg.onlineplantnursery.util.OrderDTOConvertor;
 
@@ -47,23 +48,20 @@ public class OrderController {
 		return new ResponseEntity<Order>(newOrder, HttpStatus.OK);
 	}
 
-	@PutMapping("/order/update")
-	public ResponseEntity<Order> updateOrder(@RequestBody Order cOrder) throws OrderIdNotFoundException {
-
-		Order updatedOrder = orderService.updateOrder(cOrder);
-		OrderAdminResponseDTO responseDTO = orderDTOConvertor.getOrderAdminResponseDTO(updatedOrder);
+	@PutMapping("/updateorder/{orderId}")
+	
+	public String updatedOrder(@PathVariable Integer orderId) throws OrderIdNotFoundException {
+		Order updatedOrder = orderService.viewOrder(orderId);
+		return updatedOrder.toString();
 		
-       
-		return new ResponseEntity<Order>(updatedOrder, HttpStatus.OK);
-        
-	}
-	@DeleteMapping("/order/delete/{oID}")
-	public ResponseEntity<Order> deleteOrder(@PathVariable Integer oID) throws OrderIdNotFoundException {
-       if(oID == null) {
+		}
+	@DeleteMapping("/order/delete/{oid}")
+	public ResponseEntity<Order> deleteOrder(@PathVariable Integer oid) throws OrderIdNotFoundException {
+       if(oid == null) {
     	   throw new OrderIdNotFoundException("No customer exist with this key");
        }
        else {
-		Order deletedOrder = orderService.deleteOrder(oID);
+		Order deletedOrder = orderService.deleteOrder(oid);
 
 		return new ResponseEntity<Order>(deletedOrder, HttpStatus.OK);
        }
@@ -73,7 +71,7 @@ public class OrderController {
 	@GetMapping("/order/view/{oID}")
 	public ResponseEntity<Order> viewOrder(@PathVariable Integer oID) throws OrderIdNotFoundException {
 
-		Order viewOrder = orderService.deleteOrder(oID);
+		Order viewOrder = orderService.viewOrder(oID);
 
 		return new ResponseEntity<Order>(viewOrder, HttpStatus.OK);
 	}
@@ -92,6 +90,40 @@ public class OrderController {
 		
 		return new ResponseEntity<List<OrderDTO>>(allOrderDTO,HttpStatus.OK);
 		
+	}
+	@GetMapping("/order/category/{category}")
+	public ResponseEntity<List<OrderDTO>> getOrderByCategory(@PathVariable String category) {
+		List<Order> allOrderss = orderService.getOrderByCategory(category);
+		List<OrderDTO> allOrderDTO = new ArrayList<>();
+
+		for (Order order : allOrderss) {
+
+			allOrderDTO.add(orderDTOConvertor.getOrderDTO(order));
+
+		}
+
+		return new ResponseEntity<List<OrderDTO>>(allOrderDTO, HttpStatus.OK);
+
+	}
+
+	@GetMapping("/order/customerid/{customerId}")
+	public ResponseEntity<List<OrderDTO>> getOrderByCustomerId(@PathVariable int customerId)
+			throws CustomerIdNotFoundException {
+		List<Order> allOrderss = orderService.getOrderByCustomerId(customerId);
+		if (allOrderss.isEmpty()) {
+			throw new CustomerIdNotFoundException("customer id not found");
+		} else {
+			List<OrderDTO> allOrderDTO = new ArrayList<>();
+
+			for (Order order : allOrderss) {
+
+				allOrderDTO.add(orderDTOConvertor.getOrderDTO(order));
+
+			}
+
+			return new ResponseEntity<List<OrderDTO>>(allOrderDTO, HttpStatus.OK);
+
+		}
 	}
 
 }

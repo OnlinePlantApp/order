@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.cg.onlineplantnursery.dto.OrderAdminResponseDTO;
 import com.cg.onlineplantnursery.dto.OrderDTO;
-import com.cg.onlineplantnursery.order.entity.Order;
+import com.cg.onlineplantnursery.entity.Order;
 
 
 
@@ -24,8 +24,8 @@ public class OrderDTOConvertor {
 	}
 	public OrderDTO getOrderDTO(Order o)
 	{
-		OrderDTO obj= new OrderDTO(o.getBookingOrderId(), o.getOrderDate(),o.getTransactionMode(),o.getQuantity(),o.getTotalCost());
-		return obj;
+		return new OrderDTO(o.getBookingOrderId(), o.getOrderDate(),o.getTransactionMode(),o.getQuantity(),o.getTotalCost());
+		
 	}
 	
 

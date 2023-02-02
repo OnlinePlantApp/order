@@ -3,8 +3,6 @@ package com.cg.onlineplantnursery.dto;
 import java.time.LocalDate;
 
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDTO {
-	private Integer bookingOrderId;
+	
+	private int bookingOrderId;
 	private LocalDate orderDate;
 	private String transactionMode;
 	private int quantity;
